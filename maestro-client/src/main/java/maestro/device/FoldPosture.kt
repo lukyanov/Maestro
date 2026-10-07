@@ -2,7 +2,7 @@ package maestro.device
 
 /**
  * How far a foldable is opened. Half open is a book in portrait and a tabletop in landscape; the
- * orientation is set separately, with `setOrientation`, and the device opens each to its own angle.
+ * orientation is set separately, with `setOrientation`. The driver picks the half-open angle.
  */
 enum class FoldPosture(val yamlName: String) {
     CLOSED("closed"),

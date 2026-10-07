@@ -135,23 +135,20 @@ class LocalIOSDevice(
     // so each change is confirmed here before the command returns.
     private val foldableSimulator: FoldableSimulator? by lazy { deviceId?.let(FoldableSimulator::of) }
 
-    // The posture this session last put the device in. Book and tabletop open to different angles, so a
-    // half-open device that turns is opened to the other one's; nothing reads the hinge back to tell.
-    private var foldPosture: String? = null
-
     override fun setOrientation(orientation: String) {
         val simulator = foldableSimulator ?: return xcTestDevice.setOrientation(orientation)
         xcTestDevice.setOrientationWithDeviceHub(orientation)
         simulator.awaitOrientation(orientation)
-        if (foldPosture == "halfFold") xcTestDevice.setHingeAngle(FoldableSimulator.hingeDegrees("halfFold", orientation))
     }
 
+    // Half open takes its angle from the orientation the device has now; turning it later leaves the
+    // hinge where it is, which is still half open. Nothing reads the hinge back, so nothing here
+    // remembers it either.
     override fun setFoldPosture(posture: String) {
         val simulator = foldableSimulator ?: return super.setFoldPosture(posture)
         val degrees = FoldableSimulator.hingeDegrees(posture, simulator.currentOrientation())
         xcTestDevice.setHingeAngle(degrees)
         simulator.awaitFold(open = degrees > 0)
-        foldPosture = posture
     }
 
     override fun isDarkModeEnabled(): Boolean {

@@ -138,7 +138,7 @@ interface IOSDevice : AutoCloseable {
 
     /**
      * Puts a foldable in [posture] — `closed`, `halfFold` or `flat` — and returns once it has. The
-     * device decides how far half open is.
+     * implementation decides how far half open is.
      */
     fun setFoldPosture(posture: String) {
         throw UnsupportedOperationException(

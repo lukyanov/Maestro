@@ -43,6 +43,7 @@ import maestro.orchestra.ScrollUntilVisibleCommand
 import maestro.orchestra.SetAirplaneModeCommand
 import maestro.orchestra.SetClipboardCommand
 import maestro.orchestra.SetDarkModeCommand
+import maestro.orchestra.SetFoldPostureCommand
 import maestro.orchestra.SetLocationCommand
 import maestro.orchestra.SetOrientationCommand
 import maestro.orchestra.SetPermissionsCommand
@@ -218,6 +219,7 @@ class RunOutputStaysInBundleTest {
             SetAirplaneModeCommand::class,
             SetClipboardCommand::class,
             SetDarkModeCommand::class,
+            SetFoldPostureCommand::class,
             SetLocationCommand::class,
             SetOrientationCommand::class,
             SetPermissionsCommand::class,

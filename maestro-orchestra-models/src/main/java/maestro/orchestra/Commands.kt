@@ -20,6 +20,7 @@
 package maestro.orchestra
 
 import maestro.device.DeviceOrientation
+import maestro.device.FoldPosture
 import maestro.KeyCode
 import maestro.Point
 import maestro.ScrollDirection
@@ -917,6 +918,20 @@ data class SetOrientationCommand(
             orientation = resolved.name,
             label = label?.evaluateScripts(jsEngine)
         )
+    }
+}
+
+data class SetFoldPostureCommand(
+    val posture: FoldPosture,
+    override val label: String? = null,
+    override val optional: Boolean = false,
+) : Command {
+
+    override val originalDescription: String
+        get() = "Set fold posture ${posture.yamlName}"
+
+    override fun evaluateScripts(jsEngine: JsEngine): SetFoldPostureCommand {
+        return copy(label = label?.evaluateScripts(jsEngine))
     }
 }
 

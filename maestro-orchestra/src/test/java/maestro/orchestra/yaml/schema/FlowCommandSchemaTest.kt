@@ -8,6 +8,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.google.common.truth.Truth.assertThat
 import maestro.KeyCode
 import maestro.device.DeviceOrientation
+import maestro.device.FoldPosture
 import maestro.orchestra.yaml.MaestroFlowParser
 import maestro.orchestra.yaml.YamlFluentCommand
 import maestro.orchestra.yaml.stringCommands
@@ -48,8 +49,10 @@ class FlowCommandSchemaTest {
      * `pressKey.key` and `setOrientation.orientation` have to stay `String` to keep accepting `${VAR}`,
      * so only their `@YamlValues` annotation tells the schema what the parser's `getByName` will accept.
      * Both the map form and the shorthand must carry the vocabulary, and `KeyCode` must be spelled by
-     * its `description`, not its constant names. The words are read back off the enums rather than
-     * listed here, so this test cannot become a second copy of them.
+     * its `description`, not its constant names. `setFoldPosture.posture` is a `String` for a different
+     * reason: it keeps the command free of a hand-written deserializer, and `FoldPosture` is spelled by its
+     * `yamlName`. The words are read back off the enums rather than listed here, so this test cannot
+     * become a second copy of them.
      */
     @Test
     fun `a String field annotated with YamlValues advertises its vocabulary`() {
@@ -66,6 +69,12 @@ class FlowCommandSchemaTest {
         assertThat(setOrientation.arguments.single { it.name == "orientation" })
             .isEqualTo(ArgumentSchema("orientation", ArgumentKind.ENUM, required = true, values = orientations))
         assertThat(setOrientation.shorthand).isEqualTo(ShorthandSchema(ArgumentKind.ENUM, orientations))
+
+        val postures = FoldPosture.entries.map { it.yamlName }
+        val setFoldPosture = commands.getValue("setFoldPosture")
+        assertThat(setFoldPosture.arguments.single { it.name == "posture" })
+            .isEqualTo(ArgumentSchema("posture", ArgumentKind.ENUM, required = true, values = postures))
+        assertThat(setFoldPosture.shorthand).isEqualTo(ShorthandSchema(ArgumentKind.ENUM, postures))
     }
 
     /**

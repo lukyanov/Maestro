@@ -131,8 +131,20 @@ class LocalIOSDevice(
         return deviceController.setLocation(latitude, longitude)
     }
 
+    // On a foldable the runner moves the device with Device Hub's events, which report nothing back,
+    // so each change is confirmed here before the command returns.
+    private val foldableSimulator: FoldableSimulator? by lazy { deviceId?.let(FoldableSimulator::of) }
+
     override fun setOrientation(orientation: String) {
-        return xcTestDevice.setOrientation(orientation)
+        val simulator = foldableSimulator ?: return xcTestDevice.setOrientation(orientation)
+        xcTestDevice.setOrientationWithDeviceHub(orientation)
+        simulator.awaitOrientation(orientation)
+    }
+
+    override fun setFoldPosture(degrees: Double) {
+        val simulator = foldableSimulator ?: return super.setFoldPosture(degrees)
+        xcTestDevice.setHingeAngle(degrees)
+        simulator.awaitFold(open = degrees > 0)
     }
 
     override fun isDarkModeEnabled(): Boolean {

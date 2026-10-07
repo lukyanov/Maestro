@@ -62,6 +62,9 @@
 		52F33A942AE6823100692902 /* StatusResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F33A932AE6823100692902 /* StatusResponse.swift */; };
 		5B8E0ABC2CD562D000E9D439 /* SetOrientationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8E0ABB2CD562D000E9D439 /* SetOrientationHandler.swift */; };
 		5B8E0ABE2CD562F200E9D439 /* SetOrientationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8E0ABD2CD562F200E9D439 /* SetOrientationRequest.swift */; };
+		FC7D949D362CA7F84DC5E043 /* SetHingeAngleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 355EBF569002BD29B5E95469 /* SetHingeAngleHandler.swift */; };
+		C2D5503E195F42CAEA395090 /* SetOrientationWithDeviceHubHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1534429AED04BFC5BAB59D62 /* SetOrientationWithDeviceHubHandler.swift */; };
+		0DEC06C15437204670AC0022 /* SetHingeAngleRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47289A5C2AD172BD3D9BE715 /* SetHingeAngleRequest.swift */; };
 		B989DC7F4F55F4EBD9FD10C9 /* SetAppearanceRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA3B2307F723A0C1C707C50 /* SetAppearanceRequest.swift */; };
 		989F5A5E9E97797870C83F35 /* AppearanceResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A89F24DF7C8AD254B7EFE8B /* AppearanceResponse.swift */; };
 		986F4E9268A487A7FC35B4CA /* SetAppearanceHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5BCFA7B93536729D3DF6160 /* SetAppearanceHandler.swift */; };
@@ -100,6 +103,7 @@
 		94A90DDE298AE72A006EB769 /* XCUIElement+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A90DDD298AE72A006EB769 /* XCUIElement+Extensions.swift */; };
 		9811C9092C49751D00DDACA0 /* ScreenSizeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9811C9082C49751D00DDACA0 /* ScreenSizeHelper.swift */; };
 		12FA5ADCDA613009A26E2F14 /* ActiveDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF78EA6C2C6F454C1F35B8E /* ActiveDisplay.swift */; };
+		E8B5D3067CBD364C32F55616 /* DeviceHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99066E59C35AE3E20FCFF4B0 /* DeviceHub.swift */; };
 		BBBB00012DF24A0000000001 /* AXElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00112DF24A0000000011 /* AXElement.swift */; };
 		BBBB00022DF24A0000000002 /* AXFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00122DF24A0000000012 /* AXFrame.swift */; };
 		BBBB00032DF24A0000000003 /* ElementType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBBB00132DF24A0000000013 /* ElementType.swift */; };
@@ -319,6 +323,9 @@
 		F5BCFA7B93536729D3DF6160 /* SetAppearanceHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetAppearanceHandler.swift; sourceTree = "<group>"; };
 		4020AE5DE27FE7FDCA8C2617 /* AppearanceHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceHandler.swift; sourceTree = "<group>"; };
 		5B8E0ABD2CD562F200E9D439 /* SetOrientationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetOrientationRequest.swift; sourceTree = "<group>"; };
+		355EBF569002BD29B5E95469 /* SetHingeAngleHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetHingeAngleHandler.swift; sourceTree = "<group>"; };
+		1534429AED04BFC5BAB59D62 /* SetOrientationWithDeviceHubHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetOrientationWithDeviceHubHandler.swift; sourceTree = "<group>"; };
+		47289A5C2AD172BD3D9BE715 /* SetHingeAngleRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetHingeAngleRequest.swift; sourceTree = "<group>"; };
 		5D711D048386CB50800447DD /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		610D58F82A45B5DA00B4BBEB /* ViewHierarchyHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewHierarchyHandler.swift; sourceTree = "<group>"; };
 		610D58FA2A49E3CA00B4BBEB /* AXClientSwizzler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AXClientSwizzler.swift; sourceTree = "<group>"; };
@@ -354,6 +361,7 @@
 		94A90DDD298AE72A006EB769 /* XCUIElement+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIElement+Extensions.swift"; sourceTree = "<group>"; };
 		9811C9082C49751D00DDACA0 /* ScreenSizeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSizeHelper.swift; sourceTree = "<group>"; };
 		5EF78EA6C2C6F454C1F35B8E /* ActiveDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveDisplay.swift; sourceTree = "<group>"; };
+		99066E59C35AE3E20FCFF4B0 /* DeviceHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceHub.swift; sourceTree = "<group>"; };
 		AF897D5D1CB7C6C46344E543 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		BBBB00112DF24A0000000011 /* AXElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXElement.swift; sourceTree = "<group>"; };
 		BBBB00122DF24A0000000012 /* AXFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AXFrame.swift; sourceTree = "<group>"; };
@@ -670,6 +678,7 @@
 				32ECCB252980449200A1A0A0 /* TouchRequest.swift */,
 				61C0AFE429C7AAB3005D1FC5 /* PressKeyRequest.swift */,
 				5B8E0ABD2CD562F200E9D439 /* SetOrientationRequest.swift */,
+				47289A5C2AD172BD3D9BE715 /* SetHingeAngleRequest.swift */,
 				DFA3B2307F723A0C1C707C50 /* SetAppearanceRequest.swift */,
 				4A89F24DF7C8AD254B7EFE8B /* AppearanceResponse.swift */,
 				61C0AFE829C86378005D1FC5 /* PressButtonRequest.swift */,
@@ -717,6 +726,8 @@
 				61C0AFEC29C88926005D1FC5 /* EraseTextHandler.swift */,
 				61C0AFF029C8C01F005D1FC5 /* DeviceInfoHandler.swift */,
 				5B8E0ABB2CD562D000E9D439 /* SetOrientationHandler.swift */,
+				1534429AED04BFC5BAB59D62 /* SetOrientationWithDeviceHubHandler.swift */,
+				355EBF569002BD29B5E95469 /* SetHingeAngleHandler.swift */,
 				F5BCFA7B93536729D3DF6160 /* SetAppearanceHandler.swift */,
 				4020AE5DE27FE7FDCA8C2617 /* AppearanceHandler.swift */,
 				945DD44C29D6F73B004D8ECF /* SetPermissionsHandler.swift */,
@@ -734,6 +745,7 @@
 				9468FA7C2AA741F100254AA3 /* TextInputHelper.swift */,
 				9811C9082C49751D00DDACA0 /* ScreenSizeHelper.swift */,
 				5EF78EA6C2C6F454C1F35B8E /* ActiveDisplay.swift */,
+				99066E59C35AE3E20FCFF4B0 /* DeviceHub.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1034,6 +1046,9 @@
 				610D58FB2A49E3CA00B4BBEB /* AXClientSwizzler.swift in Sources */,
 				F328D3E62A2A98E7000546D3 /* StringExtensions.swift in Sources */,
 				5B8E0ABC2CD562D000E9D439 /* SetOrientationHandler.swift in Sources */,
+				C2D5503E195F42CAEA395090 /* SetOrientationWithDeviceHubHandler.swift in Sources */,
+				FC7D949D362CA7F84DC5E043 /* SetHingeAngleHandler.swift in Sources */,
+				0DEC06C15437204670AC0022 /* SetHingeAngleRequest.swift in Sources */,
 				B989DC7F4F55F4EBD9FD10C9 /* SetAppearanceRequest.swift in Sources */,
 				989F5A5E9E97797870C83F35 /* AppearanceResponse.swift in Sources */,
 				986F4E9268A487A7FC35B4CA /* SetAppearanceHandler.swift in Sources */,
@@ -1055,6 +1070,7 @@
 				613E87D7299A64BD00FF8551 /* PointerEventPath.swift in Sources */,
 				9811C9092C49751D00DDACA0 /* ScreenSizeHelper.swift in Sources */,
 				12FA5ADCDA613009A26E2F14 /* ActiveDisplay.swift in Sources */,
+				E8B5D3067CBD364C32F55616 /* DeviceHub.swift in Sources */,
 				9468FA7D2AA741F100254AA3 /* TextInputHelper.swift in Sources */,
 				61C0AFF729D34FEA005D1FC5 /* EventTarget.swift in Sources */,
 				612DE414298426EF003C2BE0 /* EventRecord.swift in Sources */,

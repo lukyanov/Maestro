@@ -137,6 +137,15 @@ interface IOSDevice : AutoCloseable {
     fun setOrientation(orientation: String)
 
     /**
+     * Opens a foldable to [degrees], 0 closed to 180 flat, and returns once it has.
+     */
+    fun setFoldPosture(degrees: Double) {
+        throw UnsupportedOperationException(
+            "setFoldPosture needs a foldable simulator, such as an iPhone Duo (Xcode 27.1+)"
+        )
+    }
+
+    /**
      * @return true if the device's appearance is currently set to dark mode
      */
     fun isDarkModeEnabled(): Boolean

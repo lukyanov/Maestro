@@ -58,6 +58,7 @@ data class MaestroCommand(
     val runFlowCommand: RunFlowCommand? = null,
     val setLocationCommand: SetLocationCommand? = null,
     var setOrientationCommand: SetOrientationCommand? = null,
+    val setFoldPostureCommand: SetFoldPostureCommand? = null,
     val repeatCommand: RepeatCommand? = null,
     val copyTextCommand: CopyTextFromCommand? = null,
     val setClipboardCommand: SetClipboardCommand? = null,
@@ -112,6 +113,7 @@ data class MaestroCommand(
         runFlowCommand = command as? RunFlowCommand,
         setLocationCommand = command as? SetLocationCommand,
         setOrientationCommand = command as? SetOrientationCommand,
+        setFoldPostureCommand = command as? SetFoldPostureCommand,
         repeatCommand = command as? RepeatCommand,
         copyTextCommand = command as? CopyTextFromCommand,
         setClipboardCommand = command as? SetClipboardCommand,
@@ -163,6 +165,7 @@ data class MaestroCommand(
         runFlowCommand != null -> runFlowCommand
         setLocationCommand != null -> setLocationCommand
         setOrientationCommand != null -> setOrientationCommand
+        setFoldPostureCommand != null -> setFoldPostureCommand
         assertScreenshotCommand != null -> assertScreenshotCommand
         repeatCommand != null -> repeatCommand
         copyTextCommand != null -> copyTextCommand

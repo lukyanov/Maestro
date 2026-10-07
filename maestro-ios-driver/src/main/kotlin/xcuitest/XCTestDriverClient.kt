@@ -190,6 +190,14 @@ class XCTestDriverClient(
         executeJsonRequest("setOrientation", SetOrientationRequest(orientation))
     }
 
+    fun setOrientationWithDeviceHub(orientation: String) {
+        executeJsonRequest("setOrientationWithDeviceHub", SetOrientationRequest(orientation))
+    }
+
+    fun setHingeAngle(degrees: Double) {
+        executeJsonRequest("setHingeAngle", SetHingeAngleRequest(degrees))
+    }
+
     fun setAppearance(appearance: String) {
         executeJsonRequest("setAppearance", SetAppearanceRequest(appearance))
     }

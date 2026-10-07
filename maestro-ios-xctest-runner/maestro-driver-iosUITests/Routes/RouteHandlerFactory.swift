@@ -28,6 +28,10 @@ class RouteHandlerFactory {
             return DeviceInfoHandler()
         case .setOrientation:
             return SetOrientationHandler()
+        case .setOrientationWithDeviceHub:
+            return SetOrientationWithDeviceHubHandler()
+        case .setHingeAngle:
+            return SetHingeAngleHandler()
         case .setAppearance:
             return SetAppearanceHandler()
         case .appearance:

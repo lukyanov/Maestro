@@ -17,6 +17,7 @@ import kotlinx.coroutines.yield
 import maestro.device.AppCrashReport
 import maestro.device.CapturedDeviceArtifact
 import maestro.device.DeviceOrientation
+import maestro.device.FoldPosture
 import maestro.KeyCode
 import maestro.DeviceConnectionException
 import maestro.DeviceUnreachableException
@@ -4122,6 +4123,31 @@ class IntegrationTest {
 
         // Then — the button (not its child) was tapped at its center
         driver.assertEventCount(Event.Tap(Point(50, 50)), expectedCount = 1)
+    }
+
+    @Test
+    fun `Case 160 - Set fold posture`() {
+        // Given
+        val commands = readCommands("160_set_fold_posture")
+
+        val driver = driver {
+        }
+
+        // When
+        Maestro(driver).use {
+            runBlocking {
+                orchestra(it).runFlow(commands)
+            }
+        }
+
+        // Then
+        driver.assertEvents(
+            listOf(
+                Event.SetFoldPosture(FoldPosture.FLAT),
+                Event.SetFoldPosture(FoldPosture.HALF_FOLD),
+                Event.SetFoldPosture(FoldPosture.CLOSED),
+            )
+        )
     }
 
     @Test

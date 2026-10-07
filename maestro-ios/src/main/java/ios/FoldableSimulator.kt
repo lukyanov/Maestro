@@ -1,0 +1,102 @@
+package ios
+
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.slf4j.LoggerFactory
+import java.util.concurrent.TimeUnit
+
+/**
+ * Confirms that a foldable simulator has reached the posture or orientation it was sent to.
+ *
+ * The runner moves the device with Device Hub's events; nothing inside the simulator reports the result
+ * reliably, so it is read back here from `devicectl`, which does. Neither read-back can tell a half-open
+ * device from a flat one: both light the inner screen.
+ */
+class FoldableSimulator private constructor(private val deviceId: String) {
+
+    /** null when devicectl cannot be read. */
+    fun innerScreenLit(): Boolean? = devicectl("device", "info", "displays")?.let(::isInnerScreenLit)
+
+    /** devicectl's name for the orientation, or null when it cannot be read. */
+    fun currentOrientation(): String? = devicectl("device", "orientation", "get")?.let(::deviceOrientation)
+
+    fun awaitFold(open: Boolean) {
+        val reached = poll { innerScreenLit() == open }
+        if (!reached) {
+            val screen = if (open) "inner" else "cover"
+            throw IOSDeviceErrors.StateNotReached(
+                "Device $deviceId did not light its $screen screen within ${TIMEOUT_MS / 1000} s"
+            )
+        }
+    }
+
+    fun awaitOrientation(orientation: String) {
+        val expected = devicectlOrientation(orientation)
+        var current: String? = null
+        val reached = poll {
+            current = currentOrientation()
+            current == expected
+        }
+        if (!reached) {
+            throw IOSDeviceErrors.StateNotReached(
+                "Device $deviceId reports orientation $current, ${TIMEOUT_MS / 1000} s after being turned to $expected"
+            )
+        }
+    }
+
+    private fun poll(reached: () -> Boolean): Boolean {
+        val deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(TIMEOUT_MS)
+        while (true) {
+            if (reached()) return true
+            if (System.nanoTime() >= deadline) return false
+            Thread.sleep(POLL_MS)
+        }
+    }
+
+    /** null when devicectl fails, which a poll treats as "not yet". */
+    private fun devicectl(vararg command: String): String? =
+        runCatching { run(listOf("xcrun", "devicectl") + command + listOf("-d", deviceId, "-q", "-j", "-")) }
+            .onFailure { logger.warn("devicectl ${command.joinToString(" ")} failed: ${it.message}") }
+            .getOrNull()
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(FoldableSimulator::class.java)
+        private val mapper = jacksonObjectMapper()
+        private const val TIMEOUT_MS = 10_000L
+        private const val POLL_MS = 250L
+
+        /** The device as a foldable simulator, or null when it has a single built-in screen or is not a simulator. */
+        fun of(deviceId: String): FoldableSimulator? {
+            val enumerate = runCatching { run(listOf("xcrun", "simctl", "io", deviceId, "enumerate")) }
+                .onFailure { logger.info("Not treating $deviceId as a foldable simulator: ${it.message}") }
+                .getOrNull()
+                ?: return null
+            return FoldableSimulator(deviceId).takeIf { builtInDisplayCount(enumerate) > 1 }
+        }
+
+        /** `simctl io enumerate` lists external outputs (CarPlay, TV out) as display class 1. */
+        internal fun builtInDisplayCount(enumerate: String): Int =
+            Regex("""^\s*Display class: 0\s*$""", RegexOption.MULTILINE).findAll(enumerate).count()
+
+        internal fun deviceOrientation(json: String): String? =
+            mapper.readTree(json).path("result").path("deviceOrientation").textValue()
+
+        internal fun isInnerScreenLit(json: String): Boolean =
+            mapper.readTree(json).path("result").path("displays")
+                .any { display: JsonNode -> !display.path("primary").asBoolean() && display.path("active").asBoolean() }
+
+        /** Maestro sends `upsideDown`; devicectl reports it as `portraitUpsideDown`. */
+        internal fun devicectlOrientation(orientation: String): String =
+            if (orientation == "upsideDown") "portraitUpsideDown" else orientation
+
+        private fun run(command: List<String>): String {
+            val process = ProcessBuilder(command).redirectErrorStream(false).start()
+            val output = process.inputStream.bufferedReader().readText()
+            if (!process.waitFor(30, TimeUnit.SECONDS) || process.exitValue() != 0) {
+                val error = process.errorStream.bufferedReader().readText()
+                throw IllegalStateException("${command.take(4).joinToString(" ")} failed: $error")
+            }
+            return output
+        }
+    }
+}

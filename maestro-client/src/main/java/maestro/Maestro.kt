@@ -24,6 +24,7 @@ import maestro.UiElement.Companion.toUiElementOrNull
 import maestro.device.AppCrashReport
 import maestro.device.CapturedDeviceArtifact
 import maestro.device.DeviceOrientation
+import maestro.device.FoldPosture
 import maestro.drivers.CdpWebDriver
 import maestro.utils.MaestroTimer
 import maestro.utils.ScreenshotUtils
@@ -734,6 +735,14 @@ class Maestro(
         if (waitForAppToSettle) {
             waitForAppToSettle()
         }
+    }
+
+    suspend fun setFoldPosture(posture: FoldPosture) {
+        LOGGER.info("Setting fold posture: $posture")
+
+        runInterruptible(Dispatchers.IO) { driver.setFoldPosture(posture) }
+
+        waitForAppToSettle()
     }
 
     suspend fun eraseText(charactersToErase: Int) = runInterruptible(Dispatchers.IO) {

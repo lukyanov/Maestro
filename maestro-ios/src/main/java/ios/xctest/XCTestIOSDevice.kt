@@ -181,6 +181,19 @@ class XCTestIOSDevice(
         execute { client.setOrientation(orientation) }
     }
 
+    /**
+     * Turns a foldable simulator with Device Hub's orientation control, since it ignores
+     * [setOrientation]. The caller confirms the device turned.
+     */
+    fun setOrientationWithDeviceHub(orientation: String) {
+        execute { client.setOrientationWithDeviceHub(orientation) }
+    }
+
+    /** Moves a foldable simulator's hinge to [degrees]. The caller confirms the device got there. */
+    fun setHingeAngle(degrees: Double) {
+        execute { client.setHingeAngle(degrees) }
+    }
+
     override fun isDarkModeEnabled(): Boolean {
         return execute { client.getAppearance().appearance == "dark" }
     }

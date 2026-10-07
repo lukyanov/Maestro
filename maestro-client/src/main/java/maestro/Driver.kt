@@ -20,6 +20,7 @@
 package maestro
 
 import maestro.device.DeviceOrientation
+import maestro.device.FoldPosture
 import maestro.device.AppCrashReport
 import maestro.device.CapturedDeviceArtifact
 import okio.Sink
@@ -81,6 +82,13 @@ interface Driver {
     fun setLocation(latitude: Double, longitude: Double)
 
     fun setOrientation(orientation: DeviceOrientation)
+
+    /** Only a foldable device can carry this out; every other one fails the command. */
+    fun setFoldPosture(posture: FoldPosture) {
+        throw MaestroException.InvalidCommand(
+            "setFoldPosture needs a foldable device, such as an iPhone Duo simulator (Xcode 27.1+)"
+        )
+    }
 
     fun eraseText(charactersToErase: Int)
 

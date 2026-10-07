@@ -469,6 +469,7 @@ class Orchestra(
             is RunFlowCommand -> runFlowCommand(command, config)
             is SetLocationCommand -> setLocationCommand(command)
             is SetOrientationCommand -> setOrientationCommand(command)
+            is SetFoldPostureCommand -> setFoldPostureCommand(command)
             is RepeatCommand -> repeatCommand(command, maestroCommand, config)
             is DefineVariablesCommand -> defineVariablesCommand(command)
             is RunScriptCommand -> runScriptCommand(command)
@@ -818,6 +819,12 @@ class Orchestra(
 
     private suspend fun setOrientationCommand(command: SetOrientationCommand): Boolean {
         maestro.setOrientation(command.resolvedOrientation())
+
+        return true
+    }
+
+    private suspend fun setFoldPostureCommand(command: SetFoldPostureCommand): Boolean {
+        maestro.setFoldPosture(command.posture)
 
         return true
     }

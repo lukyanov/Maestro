@@ -7,6 +7,7 @@ import maestro.ScrollDirection
 import maestro.SwipeDirection
 import maestro.TapRepeat
 import maestro.device.DeviceOrientation
+import maestro.device.FoldPosture
 import maestro.orchestra.AddMediaCommand
 import maestro.orchestra.AirplaneValue
 import maestro.orchestra.ApplyConfigurationCommand
@@ -45,6 +46,7 @@ import maestro.orchestra.ScrollCommand
 import maestro.orchestra.ScrollUntilVisibleCommand
 import maestro.orchestra.SetAirplaneModeCommand
 import maestro.orchestra.SetDarkModeCommand
+import maestro.orchestra.SetFoldPostureCommand
 import maestro.orchestra.SetLocationCommand
 import maestro.orchestra.SetOrientationCommand
 import maestro.orchestra.SetPermissionsCommand
@@ -60,6 +62,7 @@ import maestro.orchestra.ToggleDarkModeCommand
 import maestro.orchestra.TravelCommand
 import maestro.orchestra.WaitForAnimationToEndCommand
 import maestro.orchestra.error.FlowPathOutsideWorkspace
+import maestro.orchestra.error.SyntaxError
 import maestro.orchestra.error.ValidationError
 import maestro.orchestra.yaml.junit.YamlCommandsExtension
 import maestro.orchestra.yaml.junit.YamlFile
@@ -965,6 +968,32 @@ internal class YamlCommandReaderTest {
             (commands[2] as SetOrientationCommand).resolvedOrientation()
         }
         assertThat(error).hasMessageThat().contains("Unknown orientation: \${orientation}")
+    }
+
+    @Test
+    fun `setFoldPosture shorthand and map form`(
+        @YamlFile("035_setFoldPosture.yaml") commands: List<Command>
+    ) {
+        assertThat(commands).containsExactly(
+            ApplyConfigurationCommand(MaestroConfig(
+                appId = "com.example.app",
+            )),
+            SetFoldPostureCommand(FoldPosture.CLOSED),
+            SetFoldPostureCommand(FoldPosture.HALF_FOLD),
+            SetFoldPostureCommand(FoldPosture.FLAT, label = "Unfold the device", optional = true),
+        )
+    }
+
+    @Test
+    fun `setFoldPosture rejects a posture it does not know`() {
+        val flow = Files.createTempDirectory("workspace").resolve("flow.yaml")
+        Files.writeString(flow, "appId: com.example\n---\n- setFoldPosture: sideways")
+
+        val error = assertThrows(SyntaxError::class.java) {
+            YamlCommandReader.readCommands(flow)
+        }
+        assertThat(error.detail).contains("Unknown fold posture: sideways")
+        assertThat(error.detail).contains("closed, halfFold, flat")
     }
 
 

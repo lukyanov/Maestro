@@ -27,6 +27,7 @@ import maestro.utils.network.XCUITestServerError
 import maestro.Capability
 import maestro.DeviceInfo
 import maestro.device.DeviceOrientation
+import maestro.device.FoldPosture
 import maestro.DeviceUnreachableException
 import maestro.Driver
 import maestro.Filters
@@ -468,6 +469,16 @@ class IOSDriver(
         }
     }
 
+    override fun setFoldPosture(posture: FoldPosture) {
+        metrics.measured("operation", mapOf("command" to "setFoldPosture")) {
+            try {
+                runDeviceCall("setFoldPosture") { iosDevice.setFoldPosture(posture.hingeDegrees) }
+            } catch (unsupported: UnsupportedOperationException) {
+                throw MaestroException.InvalidCommand(unsupported.message ?: "setFoldPosture is not supported", unsupported)
+            }
+        }
+    }
+
     override fun eraseText(charactersToErase: Int) {
         metrics.measured("operation", mapOf("command" to "eraseText")) {
             runDeviceCall("eraseText") { iosDevice.eraseText(charactersToErase) }
@@ -656,6 +667,8 @@ class IOSDriver(
         } catch (unreachable: IOSDeviceErrors.Unreachable) {
             LOGGER.error("Device unreachable while processing $callName command", unreachable)
             throw DeviceUnreachableException(unreachable.callName, unreachable)
+        } catch (notReached: IOSDeviceErrors.StateNotReached) {
+            throw MaestroException.DeviceStateNotReached(notReached.errorMessage, notReached)
         } catch (appNotRunning: XCUITestServerError.AppNotRunning) {
             LOGGER.error("App not running during $callName command", appNotRunning)
             throw MaestroException.AppNotRunning("The app is not running. It may have crashed or been closed.", appNotRunning)

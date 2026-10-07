@@ -56,6 +56,9 @@ sealed class MaestroException(override val message: String, cause: Throwable? = 
 
     class WebViewInspectionFailure(message: String, cause: Throwable? = null) : MaestroException(message, cause)
 
+    /** The device was told to change its state, such as folding or turning, and did not get there. */
+    class DeviceStateNotReached(message: String, cause: Throwable? = null) : MaestroException(message, cause)
+
     open class InvalidCommand(
         message: String,
         cause: Throwable? = null,

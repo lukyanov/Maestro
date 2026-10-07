@@ -21,6 +21,7 @@ package maestro.orchestra.yaml
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import maestro.device.DeviceOrientation
+import maestro.device.FoldPosture
 import maestro.KeyCode
 import maestro.Point
 import maestro.TapRepeat
@@ -61,6 +62,7 @@ import maestro.orchestra.ScrollCommand
 import maestro.orchestra.ScrollUntilVisibleCommand
 import maestro.orchestra.SetAirplaneModeCommand
 import maestro.orchestra.SetDarkModeCommand
+import maestro.orchestra.SetFoldPostureCommand
 import maestro.orchestra.SetLocationCommand
 import maestro.orchestra.SetOrientationCommand
 import maestro.orchestra.SetPermissionsCommand
@@ -133,6 +135,7 @@ data class YamlFluentCommand(
     val runFlow: YamlRunFlow? = null,
     val setLocation: YamlSetLocation? = null,
     val setOrientation: YamlSetOrientation? = null,
+    val setFoldPosture: YamlSetFoldPosture? = null,
     val repeat: YamlRepeatCommand? = null,
     val copyTextFrom: YamlElementSelectorUnion? = null,
     val setClipboard: YamlSetClipboard? = null,
@@ -390,7 +393,21 @@ data class YamlFluentCommand(
                     )
                 )
             )
-            
+
+            setFoldPosture != null -> listOf(
+                MaestroCommand(
+                    SetFoldPostureCommand(
+                        posture = FoldPosture.getByYamlName(setFoldPosture.posture)
+                            ?: throw SyntaxError(
+                                "Unknown fold posture: ${setFoldPosture.posture}. " +
+                                    "Valid postures are: ${FoldPosture.entries.joinToString { it.yamlName }}"
+                            ),
+                        label = setFoldPosture.label,
+                        optional = setFoldPosture.optional,
+                    )
+                )
+            )
+
             repeat != null -> listOf(
                 repeatCommand(repeat, context)
             )

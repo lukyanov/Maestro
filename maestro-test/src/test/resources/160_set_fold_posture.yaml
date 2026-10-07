@@ -1,0 +1,5 @@
+appId: com.example.app
+---
+- setFoldPosture: flat
+- setFoldPosture: halfFold
+- setFoldPosture: closed

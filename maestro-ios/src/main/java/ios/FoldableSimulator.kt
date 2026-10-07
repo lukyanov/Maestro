@@ -21,8 +21,8 @@ class FoldableSimulator private constructor(private val deviceId: String, privat
 
     /**
      * The lit screen as a PNG, at its native size and upright, or null when devicectl cannot tell which
-     * screen is lit. Taken from the host, because XCUIScreen's capture of the iPhone Duo's inner screen
-     * comes out a pixel short each way: 2852×2006 of its 2853×2007.
+     * screen is lit or simctl cannot capture it. Taken from the host, because XCUIScreen's capture of the
+     * iPhone Duo's inner screen comes out a pixel short each way: 2852×2006 of its 2853×2007.
      */
     fun screenshot(): ByteArray? {
         val port = when (innerScreenLit()) {
@@ -32,8 +32,12 @@ class FoldableSimulator private constructor(private val deviceId: String, privat
         }
         val file = File.createTempFile("maestro-foldable-", ".png")
         return try {
-            run(listOf("xcrun", "simctl", "io", deviceId, "screenshot", "--display=$port", file.absolutePath))
-            file.readBytes()
+            runCatching {
+                run(listOf("xcrun", "simctl", "io", deviceId, "screenshot", "--display=$port", file.absolutePath))
+                file.readBytes()
+            }
+                .onFailure { logger.warn("simctl io screenshot failed: ${it.message}") }
+                .getOrNull()
         } finally {
             file.delete()
         }
@@ -99,10 +103,10 @@ class FoldableSimulator private constructor(private val deviceId: String, privat
             return screenPorts(enumerate)?.let { FoldableSimulator(deviceId, it) }
         }
 
-        /** `simctl io enumerate` lists external outputs (CarPlay, TV out) as display class 1. */
-        internal fun builtInDisplayCount(enumerate: String): Int = builtInDisplays(enumerate).size
-
-        /** The inner screen is the largest built-in display, the cover screen the smallest; null with fewer than two. */
+        /**
+         * The inner screen is the largest built-in display, the cover screen the smallest; null with fewer
+         * than two. `simctl io enumerate` lists external outputs (CarPlay, TV out) as display class 1.
+         */
         internal fun screenPorts(enumerate: String): ScreenPorts? {
             val displays = builtInDisplays(enumerate).sortedBy { it.second }
             if (displays.size < 2) return null

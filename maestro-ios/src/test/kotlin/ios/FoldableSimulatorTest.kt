@@ -35,17 +35,19 @@ class FoldableSimulatorTest {
     """.trimIndent()
 
     @Test
-    fun `counts the built-in displays, not the external ones`() {
-        assertThat(FoldableSimulator.builtInDisplayCount(enumerate)).isEqualTo(2)
-    }
-
-    @Test
-    fun `the inner screen is the larger built-in display, the cover screen the smaller`() {
+    fun `the inner screen is the larger built-in display, the cover screen the smaller, and an external output neither`() {
         assertThat(FoldableSimulator.screenPorts(enumerate))
             .isEqualTo(FoldableSimulator.ScreenPorts(
                 inner = "AB99997C-07A9-4C40-B60F-AB1D7D0DEEC9",
                 cover = "55010758-3A38-434C-90B9-E6956D7E83A6",
             ))
+    }
+
+    @Test
+    fun `one built-in display beside an external output is not a foldable`() {
+        val singleScreen = enumerate.split("\n\n").filterNot { "55010758" in it }.joinToString("\n\n")
+
+        assertThat(FoldableSimulator.screenPorts(singleScreen)).isNull()
     }
 
     @Test

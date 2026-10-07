@@ -120,8 +120,9 @@ class LocalIOSDevice(
         return deviceController.openLink(link)
     }
 
-    // A foldable's full screenshot comes from the host, whole (see FoldableSimulator.screenshot). A
-    // compressed one only feeds Maestro's own screen comparisons, which the runner's serves as well.
+    // A foldable's full screenshot comes from the host, whole, whenever the host can take it (see
+    // FoldableSimulator.screenshot). A compressed one only feeds Maestro's own screen comparisons, which
+    // the runner's serves as well.
     override fun takeScreenshot(out: Sink, compressed: Boolean) {
         val image = if (compressed) null else foldableSimulator?.screenshot()
         if (image == null) return xcTestDevice.takeScreenshot(out, compressed)

@@ -472,7 +472,7 @@ class IOSDriver(
     override fun setFoldPosture(posture: FoldPosture) {
         metrics.measured("operation", mapOf("command" to "setFoldPosture")) {
             try {
-                runDeviceCall("setFoldPosture") { iosDevice.setFoldPosture(posture.hingeDegrees) }
+                runDeviceCall("setFoldPosture") { iosDevice.setFoldPosture(posture.yamlName) }
             } catch (unsupported: UnsupportedOperationException) {
                 throw MaestroException.InvalidCommand(unsupported.message ?: "setFoldPosture is not supported", unsupported)
             }

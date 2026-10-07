@@ -69,6 +69,28 @@ class FoldableSimulatorTest {
     }
 
     @Test
+    fun `half open is a book at 127 degrees in portrait and a tabletop at 115 in landscape`() {
+        assertThat(FoldableSimulator.hingeDegrees("halfFold", "portrait")).isEqualTo(127.0)
+        assertThat(FoldableSimulator.hingeDegrees("halfFold", "upsideDown")).isEqualTo(127.0)
+        assertThat(FoldableSimulator.hingeDegrees("halfFold", "portraitUpsideDown")).isEqualTo(127.0)
+        assertThat(FoldableSimulator.hingeDegrees("halfFold", "landscapeLeft")).isEqualTo(115.0)
+        assertThat(FoldableSimulator.hingeDegrees("halfFold", "landscapeRight")).isEqualTo(115.0)
+    }
+
+    @Test
+    fun `half open with the orientation unread is a book`() {
+        assertThat(FoldableSimulator.hingeDegrees("halfFold", null)).isEqualTo(127.0)
+    }
+
+    @Test
+    fun `closed and flat take the same angle in every orientation`() {
+        for (orientation in listOf("portrait", "landscapeLeft", null)) {
+            assertThat(FoldableSimulator.hingeDegrees("closed", orientation)).isEqualTo(0.0)
+            assertThat(FoldableSimulator.hingeDegrees("flat", orientation)).isEqualTo(180.0)
+        }
+    }
+
+    @Test
     fun `maps Maestro orientations to the names devicectl reports`() {
         assertThat(FoldableSimulator.devicectlOrientation("portrait")).isEqualTo("portrait")
         assertThat(FoldableSimulator.devicectlOrientation("landscapeLeft")).isEqualTo("landscapeLeft")

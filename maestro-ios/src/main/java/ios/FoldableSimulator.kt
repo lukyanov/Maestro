@@ -89,6 +89,22 @@ class FoldableSimulator private constructor(private val deviceId: String) {
         internal fun devicectlOrientation(orientation: String): String =
             if (orientation == "upsideDown") "portraitUpsideDown" else orientation
 
+        /**
+         * The hinge angle for a posture, by Maestro's name for it. Half open is a book in portrait, opened
+         * to 127° as Device Hub's own book preset is, and a tabletop in landscape, opened to 115° like a
+         * laptop. An orientation that could not be read counts as portrait. [orientation] is in either
+         * Maestro's or devicectl's spelling.
+         */
+        fun hingeDegrees(posture: String, orientation: String?): Double = when (posture) {
+            "closed" -> 0.0
+            "flat" -> 180.0
+            "halfFold" -> if (orientation?.startsWith("landscape") == true) TABLETOP_DEGREES else BOOK_DEGREES
+            else -> throw IllegalArgumentException("Unknown fold posture: $posture")
+        }
+
+        private const val BOOK_DEGREES = 127.0
+        private const val TABLETOP_DEGREES = 115.0
+
         private fun run(command: List<String>): String {
             val process = ProcessBuilder(command).redirectErrorStream(false).start()
             val output = process.inputStream.bufferedReader().readText()

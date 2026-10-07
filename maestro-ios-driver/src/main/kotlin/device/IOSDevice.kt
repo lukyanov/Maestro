@@ -137,9 +137,10 @@ interface IOSDevice : AutoCloseable {
     fun setOrientation(orientation: String)
 
     /**
-     * Opens a foldable to [degrees], 0 closed to 180 flat, and returns once it has.
+     * Puts a foldable in [posture] — `closed`, `halfFold` or `flat` — and returns once it has. The
+     * device decides how far half open is.
      */
-    fun setFoldPosture(degrees: Double) {
+    fun setFoldPosture(posture: String) {
         throw UnsupportedOperationException(
             "setFoldPosture needs a foldable simulator, such as an iPhone Duo (Xcode 27.1+)"
         )

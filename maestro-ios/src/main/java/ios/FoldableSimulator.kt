@@ -3,16 +3,41 @@ package ios
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.slf4j.LoggerFactory
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 /**
- * Confirms that a foldable simulator has reached the posture or orientation it was sent to.
+ * Confirms that a foldable simulator has reached the posture or orientation it was sent to, and captures
+ * the screen it has lit.
  *
  * The runner moves the device with Device Hub's events; nothing inside the simulator reports the result
  * reliably, so it is read back here from `devicectl`, which does. Neither read-back can tell a half-open
  * device from a flat one: both light the inner screen.
  */
-class FoldableSimulator private constructor(private val deviceId: String) {
+class FoldableSimulator private constructor(private val deviceId: String, private val ports: ScreenPorts) {
+
+    /** The `simctl io` ports of the two built-in screens. */
+    data class ScreenPorts(val inner: String, val cover: String)
+
+    /**
+     * The lit screen as a PNG, at its native size and upright, or null when devicectl cannot tell which
+     * screen is lit. Taken from the host, because XCUIScreen's capture of the iPhone Duo's inner screen
+     * comes out a pixel short each way: 2852×2006 of its 2853×2007.
+     */
+    fun screenshot(): ByteArray? {
+        val port = when (innerScreenLit()) {
+            true -> ports.inner
+            false -> ports.cover
+            null -> return null
+        }
+        val file = File.createTempFile("maestro-foldable-", ".png")
+        return try {
+            run(listOf("xcrun", "simctl", "io", deviceId, "screenshot", "--display=$port", file.absolutePath))
+            file.readBytes()
+        } finally {
+            file.delete()
+        }
+    }
 
     /** null when devicectl cannot be read. */
     fun innerScreenLit(): Boolean? = devicectl("device", "info", "displays")?.let(::isInnerScreenLit)
@@ -71,12 +96,29 @@ class FoldableSimulator private constructor(private val deviceId: String) {
                 .onFailure { logger.info("Not treating $deviceId as a foldable simulator: ${it.message}") }
                 .getOrNull()
                 ?: return null
-            return FoldableSimulator(deviceId).takeIf { builtInDisplayCount(enumerate) > 1 }
+            return screenPorts(enumerate)?.let { FoldableSimulator(deviceId, it) }
         }
 
         /** `simctl io enumerate` lists external outputs (CarPlay, TV out) as display class 1. */
-        internal fun builtInDisplayCount(enumerate: String): Int =
-            Regex("""^\s*Display class: 0\s*$""", RegexOption.MULTILINE).findAll(enumerate).count()
+        internal fun builtInDisplayCount(enumerate: String): Int = builtInDisplays(enumerate).size
+
+        /** The inner screen is the largest built-in display, the cover screen the smallest; null with fewer than two. */
+        internal fun screenPorts(enumerate: String): ScreenPorts? {
+            val displays = builtInDisplays(enumerate).sortedBy { it.second }
+            if (displays.size < 2) return null
+            return ScreenPorts(inner = displays.last().first, cover = displays.first().first)
+        }
+
+        /** Each built-in display's port and area in pixels. */
+        private fun builtInDisplays(enumerate: String): List<Pair<String, Long>> =
+            enumerate.split("Port:").drop(1)
+                .filter { Regex("""^\s*Display class: 0\s*$""", RegexOption.MULTILINE).containsMatchIn(it) }
+                .mapNotNull { port ->
+                    val uuid = Regex("""UUID: (\S+)""").find(port)?.groupValues?.get(1) ?: return@mapNotNull null
+                    val width = Regex("""Default width: (\d+)""").find(port)?.groupValues?.get(1)?.toLong() ?: 0
+                    val height = Regex("""Default height: (\d+)""").find(port)?.groupValues?.get(1)?.toLong() ?: 0
+                    uuid to width * height
+                }
 
         internal fun deviceOrientation(json: String): String? =
             mapper.readTree(json).path("result").path("deviceOrientation").textValue()

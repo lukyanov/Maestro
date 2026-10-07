@@ -6,6 +6,7 @@ import device.IOSScreenRecording
 import xcuitest.api.DeviceInfo
 import ios.xctest.XCTestIOSDevice
 import okio.Sink
+import okio.buffer
 import java.io.InputStream
 import hierarchy.ViewHierarchy
 import maestro.utils.Insight
@@ -119,8 +120,12 @@ class LocalIOSDevice(
         return deviceController.openLink(link)
     }
 
+    // A foldable's full screenshot comes from the host, whole (see FoldableSimulator.screenshot). A
+    // compressed one only feeds Maestro's own screen comparisons, which the runner's serves as well.
     override fun takeScreenshot(out: Sink, compressed: Boolean) {
-        xcTestDevice.takeScreenshot(out, compressed)
+        val image = if (compressed) null else foldableSimulator?.screenshot()
+        if (image == null) return xcTestDevice.takeScreenshot(out, compressed)
+        out.buffer().apply { write(image) }.flush()
     }
 
     override fun startScreenRecording(out: Sink): IOSScreenRecording {

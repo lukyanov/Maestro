@@ -6,37 +6,46 @@ import org.junit.jupiter.api.Test
 /** The outputs below are trimmed from an iPhone Duo simulator (Xcode 27.1, iOS 27.1). */
 class FoldableSimulatorTest {
 
+    private val enumerate = """
+        Port:
+            UUID: DB68575E-9A7D-4F9F-8B28-416C039E194B
+            Class: Unknown
+            Port Identifier: com.apple.display.captureservice
+
+        Port:
+            UUID: AB99997C-07A9-4C40-B60F-AB1D7D0DEEC9
+            Class: Display
+            Display class: 0
+            Default width: 2007
+            Default height: 2853
+
+        Port:
+            UUID: 55010758-3A38-434C-90B9-E6956D7E83A6
+            Class: Display
+            Display class: 0
+            Default width: 1398
+            Default height: 2034
+
+        Port:
+            UUID: 632CED15-1B20-4C5C-BF3C-7CD794B9140B
+            Class: Display
+            Display class: 1
+            Default width: 7680
+            Default height: 4320
+    """.trimIndent()
+
     @Test
     fun `counts the built-in displays, not the external ones`() {
-        val enumerate = """
-            Port:
-                UUID: DB68575E-9A7D-4F9F-8B28-416C039E194B
-                Class: Unknown
-                Port Identifier: com.apple.display.captureservice
-
-            Port:
-                UUID: AB99997C-07A9-4C40-B60F-AB1D7D0DEEC9
-                Class: Display
-                Display class: 0
-                Default width: 2007
-                Default height: 2853
-
-            Port:
-                UUID: 55010758-3A38-434C-90B9-E6956D7E83A6
-                Class: Display
-                Display class: 0
-                Default width: 1398
-                Default height: 2034
-
-            Port:
-                UUID: 632CED15-1B20-4C5C-BF3C-7CD794B9140B
-                Class: Display
-                Display class: 1
-                Default width: 7680
-                Default height: 4320
-        """.trimIndent()
-
         assertThat(FoldableSimulator.builtInDisplayCount(enumerate)).isEqualTo(2)
+    }
+
+    @Test
+    fun `the inner screen is the larger built-in display, the cover screen the smaller`() {
+        assertThat(FoldableSimulator.screenPorts(enumerate))
+            .isEqualTo(FoldableSimulator.ScreenPorts(
+                inner = "AB99997C-07A9-4C40-B60F-AB1D7D0DEEC9",
+                cover = "55010758-3A38-434C-90B9-E6956D7E83A6",
+            ))
     }
 
     @Test

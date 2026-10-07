@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
-# Runs the foldable fixture's flows on a foldable simulator, in whatever pose it is in.
+# Runs the foldable fixture's flows on a foldable simulator.
 #
 # The iPhone Duo (Xcode 27.1+, iOS 27.1 runtime) has two screens: the cover screen while closed, the
-# inner screen while open. The flows must pass in every pose and orientation. Nothing in Xcode changes
-# the pose from the command line, so set it with Simulator's Device Hub (hinge and orientation
-# controls) between runs:
-#
-#   closed, flat, book (half open, portrait), tabletop (half open, landscape),
-#   each in the orientations the pose allows.
+# inner screen while open. fold.yaml moves the device through closed, flat, book (half open, portrait)
+# and tabletop (half open, landscape) itself, with setFoldPosture and setOrientation, tapping after each
+# change. corners.yaml and gestures.yaml run in whatever pose the device is in; they must pass in every
+# pose and orientation, so pose the device with Simulator's Device Hub between runs to cover them all.
 #
 # Not part of the CI suite: the GitHub runners have no foldable simulator.
 #

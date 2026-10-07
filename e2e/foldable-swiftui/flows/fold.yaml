@@ -1,0 +1,31 @@
+## Folds, unfolds and turns the device in the middle of a flow, tapping after every change: closed, flat,
+## flat turned, book (half open, portrait), tabletop (half open, landscape), and closed again.
+appId: com.maestro.foldable
+name: Foldable - fold and turn mid-flow
+tags:
+  - ios
+  - foldable
+---
+- setOrientation: PORTRAIT
+- setFoldPosture: closed
+- launchApp:
+    stopApp: true
+- tapOn: "TopLeft"
+- assertVisible: "Last: TopLeft"
+- setFoldPosture: flat
+- tapOn: "BottomRight"
+- assertVisible: "Last: BottomRight"
+- setOrientation: LANDSCAPE_LEFT
+- tapOn: "TopRight"
+- assertVisible: "Last: TopRight"
+- setOrientation: PORTRAIT
+- setFoldPosture: halfFold
+- tapOn: "BottomLeft"
+- assertVisible: "Last: BottomLeft"
+- setOrientation: LANDSCAPE_RIGHT
+- tapOn: "TopLeft"
+- assertVisible: "Last: TopLeft"
+- setOrientation: PORTRAIT
+- setFoldPosture: closed
+- tapOn: "Center"
+- assertVisible: "Last: Center"

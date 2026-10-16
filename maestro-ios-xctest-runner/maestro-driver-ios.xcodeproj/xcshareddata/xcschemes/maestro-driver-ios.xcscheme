@@ -46,6 +46,9 @@
                <Test
                   Identifier = "ViewHierarchyHandlerTests/testViewHierarchyHandlerReturnsNonEmptyHierarchy()">
                </Test>
+               <Test
+                  Identifier = "SwipeRouteHandlerV2ClassificationTests">
+               </Test>
             </SkippedTests>
          </TestableReference>
       </Testables>

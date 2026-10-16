@@ -41,14 +41,15 @@ mkdir -p "$PWD/$DERIVED_DATA_PATH"
 mkdir -p "./maestro-ios-driver/src/main/resources/$DERIVED_DATA_PATH"
 mkdir -p "./maestro-ios-driver/src/main/resources/$DERIVED_DATA_PATH/$BUILD_OUTPUT_DIR"
 
-# SYMROOT pins the products under the derived data path: Xcode's own build location setting
-# (Settings > Locations) otherwise outranks -derivedDataPath for them.
+# SYMROOT and OBJROOT pin the products and intermediates under the derived data path: Xcode's own
+# build location setting (Settings > Locations) otherwise outranks -derivedDataPath for them.
 xcodebuild clean build-for-testing \
   -project ./maestro-ios-xctest-runner/maestro-driver-ios.xcodeproj \
   -derivedDataPath "$PWD/$DERIVED_DATA_PATH" \
   -scheme maestro-driver-ios \
   -destination "$DESTINATION" \
   SYMROOT="$PWD/$DERIVED_DATA_PATH/Build/Products" \
+  OBJROOT="$PWD/$DERIVED_DATA_PATH/Build/Intermediates.noindex" \
   ARCHS="$ARCHS" ${DEVELOPMENT_TEAM_OPT}
 
 ## Copy built apps and xctestrun file

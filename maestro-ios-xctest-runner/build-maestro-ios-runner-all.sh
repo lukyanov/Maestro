@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+# A failed build has to fail the Gradle task that runs this, or the jar ships whatever driver the
+# resources last held.
+set -euo pipefail
 
 DESTINATION="generic/platform=iOS Simulator" DERIVED_DATA_DIR="driver-iPhoneSimulator" $PWD/maestro-ios-xctest-runner/build-maestro-ios-runner.sh
 
